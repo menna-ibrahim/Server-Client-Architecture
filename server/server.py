@@ -65,10 +65,11 @@ def prepare_response_package(msg_components, response_packets, timestamp, versio
         # check if file is available
         try:
             # if file is available open and read its data
-            file = open(main_message[1][1:], "r")
+            file = open(main_message[1][1:], "rb")
             data = file.read()
             file.close()
             # prepare the response packet along with the data read from the file
+            data = data.decode(const.FORMAT)
             packet_string = main_message[-1] + " 200 OK\r\n\r\n" + data
             packet_bytes = packet_string.encode(const.FORMAT)
         except IOError:
@@ -119,7 +120,6 @@ def start():
             thread = threading.Thread(
                 target=handle_client, args=(conn, addr))
             thread.start()
-            thread.join()
             print(f"[ACTIVE CONNECTIONS] {threading.active_count()-1}")
 
 if __name__ == '__main__':
